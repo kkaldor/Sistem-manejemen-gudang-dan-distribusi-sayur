@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Management Operasional - Warehouse Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__title">Gudang & Operasional</div>
+      <div class="brand__subtitle">Distribusi Pemasok Sayur • Monitoring Status</div>
+    </div>
+    <nav class="topnav">
+      <a class="topnav__link" href="./index.html">Dashboard</a>
+      <a class="topnav__link" href="./gudang.html">Management Gudang</a>
+      <a class="topnav__link is-active" href="./operasional.html">Management Operasional</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="grid grid--2">
+      <div class="card">
+        <div class="card__header">
+          <h2>Master Pemasok</h2>
+          <div class="card__actions">
+            <button class="btn btn--danger" id="btnClearSupplier">Hapus Pemasok</button>
+          </div>
+        </div>
+
+        <div class="form">
+          <div class="form__row">
+            <label>Nama Pemasok
+              <input id="supplierNama" type="text" placeholder="mis. Koperasi Tani Sejahtera" />
+            </label>
+          </div>
+          <div class="form__row">
+            <label>Kontak (opsional)
+              <input id="supplierKontak" type="text" placeholder="mis. 0812xxxxxxx" />
+            </label>
+            <label>Alamat (opsional)
+              <input id="supplierAlamat" type="text" placeholder="opsional" />
+            </label>
+          </div>
+          <button class="btn btn--primary" id="btnTambahSupplier">Tambah Pemasok</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" aria-label="Daftar pemasok">
+            <thead>
+              <tr>
+                <th>Pemasok</th>
+                <th>Kontak</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="supplierTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h2>Distribusi / Order Pemasok</h2>
+          <div class="muted">alur status: Dipesan → Diterima → Diproses → Dikirim → Selesai</div>
+        </div>
+
+        <div class="form">
+          <div class="form__row">
+            <label>Pemasok
+              <select id="distSupplier"></select>
+            </label>
+            <label>Produk
+              <select id="distProduk"></select>
+            </label>
+          </div>
+          <div class="form__row">
+            <label>Jumlah
+              <input id="distJumlah" type="number" step="0.01" placeholder="0" />
+            </label>
+            <label>Status Awal
+              <select id="distStatus">
+                <option value="dipesan">Dipesan</option>
+                <option value="diterima">Diterima</option>
+                <option value="diproses">Diproses</option>
+                <option value="dikirim">Dikirim</option>
+                <option value="selesai">Selesai</option>
+              </select>
+            </label>
+          </div>
+          <div class="form__row">
+            <label>Tanggal Dipesan
+              <input id="distTanggalDipesan" type="date" />
+            </label>
+            <label>Tanggal Target
+              <input id="distTanggalTarget" type="date" />
+            </label>
+          </div>
+          <div class="form__row">
+            <label>Catatan (opsional)
+              <input id="distCatatan" type="text" placeholder="mis. pengiriman pagi" />
+            </label>
+          </div>
+
+          <button class="btn btn--primary" id="btnTambahDistribusi">Tambah Distribusi</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" aria-label="Daftar distribusi">
+            <thead>
+              <tr>
+                <th>Tanggal Target</th>
+                <th>Pemasok</th>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="distTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid--2">
+      <div class="card">
+        <div class="card__header">
+          <h2>Monitoring Status</h2>
+          <div class="muted">indikator distribusi berdasarkan status</div>
+        </div>
+        <div class="chart">
+          <canvas id="opChartStatus"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h2>Estimasi Keterlambatan</h2>
+          <div class="muted">berdasarkan selisih target vs hari ini</div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" aria-label="Estimasi keterlambatan">
+            <thead>
+              <tr>
+                <th>Pemasok</th>
+                <th>Distribusi Aktif</th>
+                <th>Terlambat</th>
+              </tr>
+            </thead>
+            <tbody id="delayTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__header">
+        <h2>Aturan Perubahan Status (Cepat)</h2>
+        <div class="muted">update status tanpa membuat entri baru</div>
+      </div>
+      <div class="note">
+        Di setiap baris distribusi tersedia tombol untuk mengubah status (majukan ke langkah berikutnya).
+        Ini memudahkan penggunaan operasional harian.
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div>© Warehouse Dashboard</div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./app.js"></script>
+  <script src="./operasional.js"></script>
+</body>
+</html>
+

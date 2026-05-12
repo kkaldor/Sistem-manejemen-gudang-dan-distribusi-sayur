@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Management Gudang - Warehouse Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__title">Gudang & Operasional</div>
+      <div class="brand__subtitle">Manajemen Stok • Visualisasi Data</div>
+    </div>
+    <nav class="topnav">
+      <a class="topnav__link" href="./index.html">Dashboard</a>
+      <a class="topnav__link is-active" href="./gudang.html">Management Gudang</a>
+      <a class="topnav__link" href="./operasional.html">Management Operasional</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="grid grid--2">
+      <div class="card">
+        <div class="card__header">
+          <h2>Master Produk</h2>
+          <div class="card__actions">
+            <button class="btn btn--danger" id="btnClearProduk" title="Hapus semua master produk">Hapus Produk</button>
+          </div>
+        </div>
+        <div class="form">
+          <div class="form__row">
+            <label>Nama Produk
+              <input id="produkNama" type="text" placeholder="mis. Bayam" />
+            </label>
+            <label>Harga Estimasi / Kg
+              <input id="produkHarga" type="number" step="0.01" placeholder="mis. 15000" />
+            </label>
+          </div>
+          <div class="form__row">
+            <label>Satuan
+              <select id="produkSatuan">
+                <option value="kg">kg</option>
+                <option value="pcs">pcs</option>
+              </select>
+            </label>
+            <label>Stok awal
+              <input id="produkStokAwal" type="number" step="0.01" placeholder="0" />
+            </label>
+          </div>
+          <button class="btn btn--primary" id="btnTambahProduk">Tambah Produk</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" aria-label="Daftar produk">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Satuan</th>
+                <th>Harga Estimasi</th>
+                <th>Stok Saat Ini</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="produkTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h2>Transaksi Stok</h2>
+          <div class="muted">Masuk / Keluar untuk memperbarui stok</div>
+        </div>
+
+        <div class="form">
+          <div class="form__row">
+            <label>Produk
+              <select id="transProduk"></select>
+            </label>
+            <label>Jenis Transaksi
+              <select id="transJenis">
+                <option value="masuk">Masuk</option>
+                <option value="keluar">Keluar</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form__row">
+            <label>Jumlah
+              <input id="transJumlah" type="number" step="0.01" placeholder="0" />
+            </label>
+            <label>Tanggal
+              <input id="transTanggal" type="date" />
+            </label>
+          </div>
+
+          <div class="form__row">
+            <label>Catatan
+              <input id="transCatatan" type="text" placeholder="opsional" />
+            </label>
+          </div>
+
+          <button class="btn btn--primary" id="btnTambahTransaksi">Simpan Transaksi</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" aria-label="Riwayat transaksi stok">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Catatan</th>
+              </tr>
+            </thead>
+            <tbody id="transTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__header">
+        <h2>Ringkasan Stok</h2>
+        <div class="muted">indikator cepat untuk operasional</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__label">Total Produk</div><div class="kpi__value" id="gkpiTotalProduk">-</div></div>
+        <div class="kpi"><div class="kpi__label">Total Item Stok</div><div class="kpi__value" id="gkpiTotalItemStok">-</div></div>
+        <div class="kpi"><div class="kpi__label">Nilai Stok Estimasi</div><div class="kpi__value" id="gkpiNilaiStok">-</div></div>
+      </div>
+      <div class="chart">
+        <canvas id="gChartStokPerProduk"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div>© Warehouse Dashboard</div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./app.js"></script>
+  <script src="./gudang.js"></script>
+</body>
+</html>
+
