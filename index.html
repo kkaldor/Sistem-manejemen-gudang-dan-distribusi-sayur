@@ -10,18 +10,21 @@
   <header class="app-header">
     <div class="brand">
       <div class="brand__title">Gudang & Operasional</div>
-      <div class="brand__subtitle">Distribusi Pemasok Sayur • Manajemen Stok • Visualisasi Data</div>
+      <div class="brand__subtitle">Distribusi Pemasok Sayur  • Manajemen Stok  • Visualisasi Data</div>
     </div>
     <nav class="topnav">
       <a class="topnav__link is-active" href="./index.html">Dashboard</a>
       <a class="topnav__link" href="./gudang.html">Management Gudang</a>
       <a class="topnav__link" href="./operasional.html">Management Operasional</a>
       <button class="topnav__btn" id="btnExport" title="Ekspor data ke file JSON">Ekspor Data</button>
+      <button class="topnav__btn" id="btnExportCSV" title="Ekspor seluruh data operasional ke file CSV">Ekspor CSV</button>
       <label class="topnav__label">
         <span class="topnav__label-text">Impor JSON</span>
         <input id="fileImport" type="file" accept="application/json" hidden />
         <span class="topnav__btn is-secondary" id="btnImport">Pilih File</span>
       </label>
+      <button class="topnav__btn is-secondary" id="btnLogout" title="Keluar">Logout</button>
+
     </nav>
   </header>
 
@@ -121,8 +124,19 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./auth-guard.js"></script>
   <script src="./app.js"></script>
   <script src="./dashboard.js"></script>
+  <script>
+    (function () {
+      const btnLogout = document.getElementById('btnLogout');
+      btnLogout?.addEventListener('click', () => {
+        window.WarehouseAuth.logout();
+        window.location.href = './login.html';
+      });
+    })();
+  </script>
 </body>
 </html>
 

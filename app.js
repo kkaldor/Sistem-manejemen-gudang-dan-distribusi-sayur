@@ -161,26 +161,111 @@ function formatTanggalTargetVsHariIni(targetISO) {
   return { daysDiff: days, label };
 }
 
-// Expose for other scripts
-window.WarehouseApp = {
-  STORAGE_KEY,
-  STATUS_ORDER,
-  STATUS_LABEL,
-  uid,
-  todayISO,
-  formatIDR,
-  safeNumber,
-  loadState,
-  saveState,
-  clearAllData,
-  computeStockByProduk,
-  computeStockTimeline,
-  countDistribusiByStatus,
-  distStepNext,
-  getProdukById,
-  getPemasokById,
-  exportStateToFile,
-  importStateFromFile,
-  formatTanggalTargetVsHariIni
-};
+  function csvEscape(value) {
+    if (value === null || value === undefined) return '';
+    const s = String(value);
+    // escape " and wrap if contains special chars
+    if (/[",\r\n]/.test(s)) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
+  function buildCSVSection(title, headers, rows) {
+    const lines = [];
+    lines.push(csvEscape(title));
+    lines.push(headers.map(csvEscape).join(','));
+    for (const row of rows) {
+      lines.push(headers.map((h) => csvEscape(row[h])).join(','));
+    }
+    return lines.join('\r\n');
+  }
+
+  function exportAllDataToCSV(filename = 'warehouse-dashboard-operasional-data.csv') {
+    const state = loadState();
+
+    const produkHeaders = ['id', 'nama', 'satuan', 'hargaEstimasi', 'stokAwal'];
+    const produkRows = (state.produk || []).map((p) => ({
+      id: p.id,
+      nama: p.nama,
+      satuan: p.satuan || '',
+      hargaEstimasi: p.hargaEstimasi,
+      stokAwal: p.stokAwal
+    }));
+
+    const transaksiHeaders = ['id', 'produkId', 'jenis', 'jumlah', 'tanggal', 'catatan'];
+    const transaksiRows = (state.transaksiStok || []).map((t) => ({
+      id: t.id,
+      produkId: t.produkId,
+      jenis: t.jenis,
+      jumlah: t.jumlah,
+      tanggal: t.tanggal,
+      catatan: t.catatan || ''
+    }));
+
+    const pemasokHeaders = ['id', 'nama', 'kontak', 'alamat'];
+    const pemasokRows = (state.pemasok || []).map((s) => ({
+      id: s.id,
+      nama: s.nama,
+      kontak: s.kontak || '',
+      alamat: s.alamat || ''
+    }));
+
+    const distribusiHeaders = ['id', 'pemasokId', 'produkId', 'jumlah', 'status', 'tanggalDipesan', 'tanggalTarget', 'catatan'];
+    const distribusiRows = (state.distribusi || []).map((d) => ({
+      id: d.id,
+      pemasokId: d.pemasokId,
+      produkId: d.produkId,
+      jumlah: d.jumlah,
+      status: d.status,
+      tanggalDipesan: d.tanggalDipesan,
+      tanggalTarget: d.tanggalTarget,
+      catatan: d.catatan || ''
+    }));
+
+    // 1 file, 4 section (dipisah blank line)
+    const sections = [
+      buildCSVSection('SECTION: PRODUK', produkHeaders, produkRows),
+      buildCSVSection('SECTION: TRANSAKSI_STOK', transaksiHeaders, transaksiRows),
+      buildCSVSection('SECTION: PEMASOK', pemasokHeaders, pemasokRows),
+      buildCSVSection('SECTION: DISTRIBUSI', distribusiHeaders, distribusiRows)
+    ];
+
+    const csvText = sections.join('\r\n\r\n');
+
+    const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Expose for other scripts
+  window.WarehouseApp = {
+    STORAGE_KEY,
+    STATUS_ORDER,
+    STATUS_LABEL,
+    uid,
+    todayISO,
+    formatIDR,
+    safeNumber,
+    loadState,
+    saveState,
+    clearAllData,
+    computeStockByProduk,
+    computeStockTimeline,
+    countDistribusiByStatus,
+    distStepNext,
+    getProdukById,
+    getPemasokById,
+    exportStateToFile,
+    importStateFromFile,
+    formatTanggalTargetVsHariIni,
+    exportAllDataToCSV
+  };
+
 

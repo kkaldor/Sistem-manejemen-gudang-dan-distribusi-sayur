@@ -16,7 +16,9 @@
       <a class="topnav__link" href="./index.html">Dashboard</a>
       <a class="topnav__link" href="./gudang.html">Management Gudang</a>
       <a class="topnav__link is-active" href="./operasional.html">Management Operasional</a>
+      <button class="topnav__btn is-secondary" id="btnLogout" title="Keluar">Logout</button>
     </nav>
+
   </header>
 
   <main class="container">
@@ -170,8 +172,19 @@
   <footer class="footer"><div>© Warehouse Dashboard</div></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./auth-guard.js"></script>
   <script src="./app.js"></script>
   <script src="./operasional.js"></script>
+  <script>
+    (function () {
+      const btnLogout = document.getElementById('btnLogout');
+      btnLogout?.addEventListener('click', () => {
+        window.WarehouseAuth.logout();
+        window.location.href = './login.html';
+      });
+    })();
+  </script>
 </body>
 </html>
 

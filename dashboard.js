@@ -315,7 +315,13 @@
     const btnExport = $('btnExport');
     btnExport?.addEventListener('click', () => exportStateToFile());
 
+    const btnExportCSV = $('btnExportCSV');
+    btnExportCSV?.addEventListener('click', () => {
+      window.WarehouseApp.exportAllDataToCSV();
+    });
+
     const fileImport = $('fileImport');
+
     const btnImport = $('btnImport');
     btnImport?.addEventListener('click', () => fileImport?.click());
     fileImport?.addEventListener('change', async (e) => {

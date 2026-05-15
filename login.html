@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Warehouse Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__title">Gudang & Operasional</div>
+      <div class="brand__subtitle">Akun & Login (Offline)</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid grid--2">
+      <div class="card">
+        <div class="card__header">
+          <h2>Login</h2>
+          <div class="muted">Masuk untuk mengakses data</div>
+        </div>
+
+        <div class="form">
+          <div class="form__row">
+            <label>Username
+              <input id="loginUsername" type="text" placeholder="mis. admin" />
+            </label>
+            <label>Password
+              <input id="loginPassword" type="password" placeholder="••••••" />
+            </label>
+          </div>
+          <button class="btn btn--primary" id="btnLogin">Login</button>
+          <div id="loginMsg" class="muted" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h2>Register</h2>
+          <div class="muted">Buat akun baru</div>
+        </div>
+
+        <div class="form">
+          <div class="form__row">
+            <label>Username
+              <input id="regUsername" type="text" placeholder="mis. user1" />
+            </label>
+            <label>Password
+              <input id="regPassword" type="password" placeholder="min 6 karakter" />
+            </label>
+          </div>
+          <button class="btn btn--primary" id="btnRegister">Daftar</button>
+          <div id="regMsg" class="muted" aria-live="polite"></div>
+        </div>
+
+        <div class="note" style="margin-top:12px">
+          Catatan: akun & session tersimpan di <b>localStorage</b>. Untuk keamanan produksi, sebaiknya gunakan backend.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>© Warehouse Dashboard</div>
+  </footer>
+
+  <script src="./auth.js"></script>
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next') || './index.html';
+
+      const show = (el, msg) => {
+        if (!el) return;
+        el.textContent = msg || '';
+      };
+
+      $('btnLogin').addEventListener('click', () => {
+        show($('loginMsg'), '');
+        const username = $('loginUsername').value.trim();
+        const password = $('loginPassword').value;
+
+        const res = window.WarehouseAuth.login(username, password);
+        if (!res.ok) return show($('loginMsg'), res.error);
+        window.location.href = next;
+      });
+
+      $('btnRegister').addEventListener('click', () => {
+        show($('regMsg'), '');
+        const username = $('regUsername').value.trim();
+        const password = $('regPassword').value;
+
+        const res = window.WarehouseAuth.register(username, password);
+        if (!res.ok) return show($('regMsg'), res.error);
+        // sudah auto-login setelah register
+        window.location.href = next;
+      });
+    })();
+  </script>
+</body>
+</html>
+
